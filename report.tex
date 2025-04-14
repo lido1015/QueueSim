@@ -19,30 +19,16 @@
 
 % Paradoja de pooling
 
+\hyphenpenalty=10000 % Penaliza fuertemente la división de palabras
+\exhyphenpenalty=10000 % Penaliza división después de guiones existentes
+\tolerance=1 % Reduce la "urgencia" de dividir palabras
+\emergencystretch=\maxdimen % Evita overfull boxes sin dividir palabras
+
+
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 
-% \lstdefinestyle{mystyle}{
-%     commentstyle=\color{codegreen},
-%     keywordstyle=\color{magenta},
-%     numberstyle=\tiny\color{codegray},
-%     stringstyle=\color{codepurple},
-%     basicstyle=\ttfamily\footnotesize,
-%     breakatwhitespace=false,         
-%     breaklines=true,                 
-%     captionpos=b,                    
-%     keepspaces=true,                 
-%     numbers=left,                    
-%     numbersep=5pt,                  
-%     showspaces=false,                
-%     showstringspaces=false,
-%     showtabs=false,                  
-%     tabsize=2,
-%     frame=single
-% }
-
-%\lstset{style=mystyle}
 
 \setlength{\headheight}{24.01996pt}
 \addtolength{\topmargin}{-12.01996pt}
@@ -72,7 +58,10 @@
 
 % Configurar encabezado y pie de página
 \pagestyle{fancy}
-\fancyhf{}
+\fancyhf{}\hyphenpenalty=10000 % Penaliza fuertemente la división de palabras
+\exhyphenpenalty=10000 % Penaliza división después de guiones existentes
+\tolerance=1 % Reduce la "urgencia" de dividir palabras
+\emergencystretch=\maxdimen % Evita overfull boxes sin dividir palabras
 \fancyhead[L]{\small\textcolor{primary}{\nouppercase{\leftmark}}}
 \fancyfoot[C]{\textcolor{primary}{\thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -133,30 +122,44 @@
 \chapter{Introducción}
 
 
-En el ámbito de la gestión de servicios, la elección entre estrategias especializadas o generalistas representa 
-un dilema recurrente, donde la eficiencia operativa y la experiencia del usuario dependen de la configuración 
-de los recursos disponibles. Este proyecto aborda dicho desafío mediante la simulación computacional 
-basada en eventos discretos, un enfoque que permite modelar sistemas dinámicos bajo condiciones
-controladas. \\
 
-El estudio se centra en comparar dos escenarios: uno con servidores dedicados a tareas específicas
-(estrategia especializada) y otro en el que los servidores son flexibles y pueden atender múltiples tipos
-de demandas (estrategia generalista). Aunque el análisis se contextualiza en un caso sencillo de una sucursal bancaria,
-los resultados se orientan a ofrecer conocimientos aplicables a sistemas de servicios más amplios y complejos.
+En el ámbito de la gestión de servicios, la elección entre estrategias especializadas (recursos dedicados a tareas específicas) y generalistas (recursos multifuncionales) constituye un dilema recurrente. La eficiencia del proceso y la experiencia del usuario están directamente vinculadas a cómo se estructuran los recursos disponibles \cite{pinker2000} . Este proyecto aborda dicho desafío mediante la simulación basada en eventos discretos, una técnica que permite modelar sistemas dinámicos con precisión bajo condiciones controladas y replicables. \\
+
+
+
+El estudio compara dos modelos de colas contrastantes:
+
+\begin{enumerate}
+    \item[\textbf{a)}] Escenario especializado   \begin{itemize}[noitemsep]
+        \item Servidores dedicados a un único tipo de tarea.
+        \item \textit{Configuración de colas}: Múltiples colas dedicadas (una por tipo de demanda).
+        \item \textit{Riesgo clave}: Costos asociados a desequilibrio de ocupación entre colas.
+    \end{itemize}
+    
+    \item[\textbf{b)}] Escenario generalista
+    \begin{itemize}[noitemsep]
+        \item Servidores flexibles que atienden múltiples demandas.
+        \item \textit{Configuración de colas}: Cola única atendida por todos los servidores.
+        \item \textit{Riesgo clave}: Incremento del tiempo de atención por cambios de contexto.
+    \end{itemize}
+\end{enumerate}
+
+
+Aunque el análisis se desarrolla en un caso simplificado de una sucursal bancaria (procesos de retiros y depósitos), los hallazgos buscan extrapolarse a sistemas complejos como cadenas logísticas, centros de atención al cliente o redes hospitalarias.
 
 \section{Objetivos y metas}
-El proyecto tiene como objetivo principal analizar y comparar el desempeño de las dos configuraciones operativas mencionadas anteriormente. Para ello, se definen las siguientes metas:
+El objetivo principal es evaluar comparativamente el desempeño de ambas estrategias, con tres metas específicas:
 
 \begin{itemize}
-    \item[1.] Calcular la eficiencia global de cada estrategia, cuantificando métricas clave como: congestión del sistema, tiempo de espera del usuario, 
-    probabilidad de retrasos críticos y subutilización de recursos.  
-    \item[2.] Evaluar trade-off entre la flexibilidad operativa (capacidad de atender múltiples tareas) y la velocidad de servicio, considerando posibles incrementos en los tiempos de atención al adoptar una estrategia generalista.
-    \item[3.] Proporcionar recomendaciones basadas en datos para la optimización de sistemas de servicios, extrapolables a contextos como logística, atención al cliente o salud.
+    \item[1.] Cuantificar la eficiencia global mediante métricas fundamentales.  
+    \item[2.] Evaluar \textit{trade-off}  entre eficiencia y resiliencia.
+    \item[3.] Generar recomendaciones basadas en evidencia para optimizar sistemas de servicios.
 \end{itemize}
 
-\newpage
 
 \section{Sistema específico a simular}
+
+El texto del problema fue extraído de \cite{sabater2015} \footnote{Problema Gasto de recursos por desequilibrio6.5: Sucursal Bancaria.}.
 
 \begin{quote}
     Una pequeña sucursal de un banco tiene dos empleados, uno para los pagos y otro para los cobros. Los clientes llegan a 
@@ -166,30 +169,29 @@ pensando hacer un cambio en que los dos operarios puedan hacer tanto pagos como 
 una cola está llena y la otra parada. Sin embargo, se estima que cuando los empleados se encarguen de las dos cosas 
 el tiempo de servicio aumentará a una media de 2,4 minutos. Compara el sistema que se emplea ahora con el propuesto, 
 calculando el total de gente en el banco, el tiempo medio que pasaría un cliente en el banco hasta que es atendido, 
-la probabilidad de que un cliente espere más de cinco minutos y el tiempo medio que están parados los empleados. \footnote{Problema 6.5 de \cite{queue}}
+la probabilidad de que un cliente espere más de cinco minutos y el tiempo medio que están parados los empleados. 
 \end{quote}
 
-De la definición del problema se obtienen las siguientes variables de interés:
+Se tienen las siguientes variables de interés:
 \begin{itemize}
     \item \textbf{L:} Media del total de clientes en el sistema en cada instante (congestión del sistema)
     \item \(\mathbf{W_q}\)\textbf{:} Media del tiempo durante el que un cliente permanece en la cola (tiempo de espera)
-    \item \(\mathbf{P ( W_q > t_k)}\)\textbf{:} Probabilidad de que el tiempo de espera sea superior a un tiempo determinado (retrasos críticos)
-    \item \(\mathbf{t_{free}}\)\textbf{:} Media del tiempo durante el cual los servidores no tienen clientes (subutilización de recursos)  
+    \item \(\mathbf{P ( W_q > t_{max})}\)\textbf{:} Probabilidad de que el tiempo de espera de un cliente sea superior a un tiempo determinado (retrasos críticos)
+    \item \(\mathbf{P_{idle}}\)\textbf{:} Porcentaje del tiempo durante el cual los servidores no tienen clientes (capacidad ociosa)  
 \end{itemize}
 
 
 \section{Variables que describen el problema}
 
 \begin{itemize}
-    \item \(\mathbf{\lambda_1}\)\textbf{:} tasa de llegadas de clientes para pagos (distribución Poisson con media $\lambda_1$)
-    \item \(\mathbf{\lambda_2}\)\textbf{:} tasa de llegadas de clientes para cobros (distribución Poisson con media $\lambda_2$)    
-    \item \(\mathbf{t_1}\)\textbf{:} tiempo de atención en el servidor 1 (distribución exponencial con media $t_1$)
-    \item \(\mathbf{t_2}\)\textbf{:} tiempo de atención en el servidor 2 (distribución exponencial con media $t_2$)
-    \item \textbf{s:} estrategia especializada vs generalista (variable categórica)
-    \item \(\mathbf{t_k}\)\textbf{:} tiempo de espera crítico 
+    \item \(\mathbf{\lambda_1}\)\textbf{:} tasa media de llegadas por hora de clientes para pagos (distribución de Poisson con parámetro $\lambda_1$)
+    \item \(\mathbf{\lambda_2}\)\textbf{:} tasa  media de llegadas por hora de clientes para cobros (distribución de Poisson con parámetro $\lambda_2$)    
+    \item \(\mathbf{t_1}\)\textbf{:} media del tiempo (minutos) de atención en el servidor 1 (distribución exponencial con frecuencia $\mu_1 = \frac{60}{t_1}$ clientes atentidos por hora)
+    \item \(\mathbf{t_2}\)\textbf{:} media del tiempo (minutos) de atención en el servidor 2 (distribución exponencial con frecuencia $\mu_2 = \frac{60}{t_2}$ clientes atendidos por hora)
+    \item \(\mathbf{t_{max}}\)\textbf{:} tiempo (minutos) de espera crítico 
 \end{itemize}
 
-En caso de estrategia especializada, el servidor 1 atiende los pagos y el servidor 2 los cobros. En caso de estrategia generalista, $t_1 = t_2$.
+En caso de escenario especializado, el servidor 1 atiende los pagos y el servidor 2 los cobros. En caso de escenario generalista, $t_1 = t_2$.
 
 
 
@@ -376,89 +378,210 @@ en la media de cada variable para las dos estrategias.
 
 \section{Descripción del modelo}
 
-Consideramos dos sistemas de colas diferentes bajo teoría de colas markovianas, descritas detalladamente en \cite{queue}. Para ambos sistemas asumimos 
-procesos Poisson de llegada con tasa $\lambda$ y servicio con tasa $\mu$. Definimos:
+La teoría de colas analiza sistemas de espera mediante procesos estocásticos. En sistemas markovianos $M/M/c$, se asumen procesos Poisson de llegada con tasa $\lambda$ y servicio con tasa $\mu$, lo que permite modelar el sistema de nuestro problema como una cadena de Markov en tiempo continuo. \\
+
+Definimos:
 \begin{itemize}
-    \item $\rho = \frac{\lambda}{c\mu}$ (intensidad de tráfico, $c$ cantidad de servidores en paralelo)
+\item $c:$ Número de servidores en paralelo
+    \item $\rho = \frac{\lambda}{c\mu} :$ Factor de utilización de cada servidor
+    \item $r = \frac{\lambda}{\mu} :$ Número promedio de clientes que atienden en conjunto los servidores cada instante
     \item $L$: Número promedio de clientes en el sistema
-    \item $L_q$: Número promedio en cola
+    \item $L_q$: Longitud promedio de la cola
+    \item $W$: Tiempo promedio en el sistema
     \item $W_q$: Tiempo promedio en cola
+    \item $P_0$: Probabilidad de sistema vacío
+    \item $P_{idle}$: Probabilidad de que un servidor no tenga clientes (capacidad ociosa)
+    
 \end{itemize}
+    
+Estas métricas clave se obtienen resolviendo ecuaciones de balance y aplicando la \textbf{Ley de Little}: $L=\lambda W$. En esta sección, las f\'ormulas que no est\'an explícitamente justificadas fueron obtenidas de \cite{sabater2015}.  
+    
 
-\subsection{Sistema Actual (Dos Colas M/M/1)}
 
-Para cada servidor simple independiente:
+\subsection{Sistema Especializado}
+
+Para cada servidor simple independiente ($\lambda=20$, $\mu=30$), aplicamos el modelo $M/M/1$.
+
+
 \begin{itemize}
-    \item $L = \frac{\lambda}{\mu - \lambda}$
-    \item $W_q = \frac{\rho}{\mu - \lambda}$
-    \item $P(W_q > t) = \rho e^{-(\mu - \lambda)t}$
-    \item $P_{free} = 1 - \rho$
+    \item Clientes en sistema  
+    \begin{flalign*}
+\rho &= \frac{\lambda}{\mu} = \frac{2}{3} & \\
+L &= \frac{\rho}{1 - \rho} = 2 \text{\ por servidor} \Rightarrow \text{4 en total} &
+\end{flalign*}
+
+ 
+    \item Tiempo de espera    
+ \begin{flalign*}
+W_q &= \frac{\rho}{\mu - \lambda} = \frac{2}{30} \text{\ horas} = 4 \text{\ minutos} &
+\end{flalign*}
+
+\item Probabilidad de retraso cr\'itico
+
+En \cite{book} se demuestra que el tiempo de espera en cola de un sistema $M/M/c$ se comporta seg\'un la siguiente distribuci\'on exponencial modificada:
+ \begin{flalign*}
+P(W_q \leq t) &= 1 - P_w \ e^{-(c\mu - \lambda)t} &
+\end{flalign*}
+donde $P_w$ es la probabilidad de que el sistema est\'e lleno y el cliente tenga que esperar al llegar. En este caso $P_w = \rho$, por tanto:
+\begin{flalign*}
+P(W_q > t) &= 1 - P(W_q \leq t) = \rho e^{-(\mu - \lambda)t} & \\ 
+P(W_q > 5) &= P(W_q > \frac{1}{12} \ \text{horas}) = \frac{2}{3} e^{-10\frac{1}{12}} \approx 0.2897    &
+\end{flalign*}
+
+\item Capacidad ociosa
+ \begin{flalign*}
+P_{idle} &= 1 - \rho = \frac{1}{3} &
+\end{flalign*}
+
 \end{itemize}
 
-\subsection{Sistema Propuesto (Una Cola M/M/2)}
-Para el sistema conjunto de los dos servidores en paralelo:
+
+
+\subsection{Sistema Generalista}
+
+
+Para el sistema conjunto de los dos servidores en paralelo ($\lambda=40$, $\mu=25$, $c=2$), aplicamos el modelo $M/M/2$.
+
+
 \begin{itemize}
-    \item 
-    $P_0 = \left[\sum_{k=0}^{1}\frac{(2\rho)^k}{k!} + \frac{(2\rho)^2}{2!(1-\rho)}\right]^{-1}$
-    
-    \item $L_q = \frac{(2\rho)^2\rho}{2!(1-\rho)^2}P_0$
-    
-    \item $L = \frac{\lambda}{\mu} + L_q$
-    
-    \item $W_q = \frac{L_q}{\lambda}$
-    
-    \item $P(W_q > t) = \frac{2\rho e^{-2\mu(1-\rho)t}}{2 - \rho}P_0$
-    
-    \item $P_{\text{free}} = 1 - \rho$ \\
+    \item Clientes en sistema  
+    \begin{flalign*}
+\rho &= \frac{\lambda}{c\mu} = \frac{4}{5} & \\
+r &= \frac{\lambda}{\mu} = \frac{8}{5} & \\
+P_0 &= \left[\sum_{n=0}^{c-1}\frac{r^n}{n!} + \frac{r^c}{c!(1-\rho)}\right]^{-1} = \left[1 + r + \frac{r^4}{0.4} \right]^{-1} = \frac{1}{9} &  \\
+L_q &= \frac{r^c\rho}{c!(1-\rho)^2}P_0 = \frac{2.56 \cdot 0.8}{2 \cdot 0.04 \cdot 9} = 2.8444 \ \ \Rightarrow \ \  L = L_q + r = 4,4444 & 
+\end{flalign*}
+
+ 
+    \item Tiempo de espera  \\
+      
+    Aplicando Ley de Little:
+      \begin{flalign*}
+W_q &= \frac{L_q}{\lambda} = 0.07111 \text{\ horas} \approx 4,2667 \text{\ minutos}  &
+\end{flalign*}
+
+\item Probabilidad de retraso cr\'itico
+
+En este caso, $P_w = \frac{r^cP_0}{c!(1-\rho)}$, luego:
+\begin{flalign*}
+P(W_q > t)  &= 1 - P(W_q \leq t) = \frac{r^cP_0}{c!(1-\rho)}e^{-(c\mu - \lambda)t} & \\
+P(W_q > 5) &= P(W_q > \frac{1}{12} \ \text{horas}) = \frac{2.56 \cdot \frac{1}{9}}{2 \cdot 0.2} e^{-10\frac{1}{12}} \approx 0.3090  &
+\end{flalign*}
+
+\item Capacidad ociosa
+ \begin{flalign*}
+P_{idle} &= 1 - \rho = \frac{1}{5} &
+\end{flalign*}
+
 \end{itemize}
+
+
+
 
 
 \section{Supuestos y restricciones}
 \begin{itemize}
+
+    \item    \textbf{Proceso de nacimiento-muerte:} Las transiciones entre estados siguen una cadena de Markov con tasas $\lambda$ (nacimientos) y $\mu$ (muertes). Los servidores se comportan de forma id\'entica.
+
+   \item  \textbf{Equilibrio estable:} $\rho<1$ garantiza estado estacionario ($\rho=0.6667$ y $\rho=0.8$ cumplen esto).     
+    
+
     \item \textbf{Política FIFO:} Clientes son atendidos en orden de llegada
+    
+
     \item \textbf{Independencia:} Llegadas y servicios son procesos independientes
-    \item \textbf{Uniformidad:} Llegadas y servicios tienen la misma tasa para ambos sistemas y ambos servicios (valores de entrada del problema específico)
+   \item \textbf{Memoria exponencial:} Los tiempos entre llegadas y servicios carecen de memoria, justificando el uso de distribuciones exponenciales.   
+   
     \item \textbf{Espacio infinito:} Capacidad ilimitada en las colas
-    \item \textbf{Homogeneidad:} Tasa de servicio constante en el tiempo
+    \item \textbf{Homogeneidad:} Tasas constantes en el tiempo
+    
+    
 \end{itemize}
 
+
+
+\newpage
 
 
 \section{Comparación de resultados}
 \begin{table}[h]
 \centering
 \caption{Resultados Teóricos vs. Experimentales}
-\begin{tabular}{lccccc}
+\begin{tabular}{cccccc}
 \toprule
-\textbf{Métrica} & \multicolumn{2}{c}{\textbf{Sistema actual ($\lambda = 20$, $\mu = 30$)}} & \multicolumn{2}{c}{\textbf{Sistema propuesto ($\lambda = 40$, $\mu = 25$)}} \\
+\textbf{Métrica} & \multicolumn{2}{c}{\textbf{Especializado}} & \multicolumn{2}{c}{\textbf{Generalista}} \\
  & Teórico & Experimental & Teórico & Experimental \\
 \midrule
-Clientes en el sistema & 4.00 & 3.99 & 4.44 & 4.44 \\
-Tiempo en cola (min) & 4.00 & 3.99 & 4.27 & 4.26 \\
-Prob. de retraso crítico & 0.2895 & 0.29 & 0.3089 & 0.31 \\
+Clientes en el sistema & 4 & 3.99 & 4.4444 & 4.44 \\
+Tiempo en cola (min) & 4 & 3.99 & 4.2667 & 4.26 \\
+Prob. de retraso crítico & 0.2897 & 0.29 & 0.3090 & 0.31 \\
 Tiempo inactivo (\%) & 33 & 33 & 20 & 20 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Los resultados experimentales coinciden con las predicciones teóricas, confirmando la validez de los supuestos markovianos. 
-Se concluye que ambos enfoques proveen una base sólida para la toma de decisiones operativas.
+La concordancia de resultados (error $< 1 \%$) confirma los supuestos markovianos y la aplicabilidad del modelo. Se observa que ambos enfoques proveen una base s\'olida para la toma de decisiones operarivas.
 
 \chapter{Conclusiones}
 
 
+
 \begin{itemize}
-    \item[1.] Servidores especializados provocan bloqueo parcial del sistema debido a las
-    colas separadas, lo que lleva a una subutilización de recursos.
-    \item[2.] Servidores generalistas son más lentos debido a la falta de especialización,
-    provocando una peor experiencia de usuario.
+\item[1.] \textbf{Eficiencia cuantificada:}
+
+\begin{itemize}
+\item El sistema especializado presenta mejor desempeño operativo inmediato  gracias a su menor factor de utilización, pero con mayor capacidad ociosa.
+\item El sistema generalista logra mayor eficiencia agregada al compartir recursos, pero con penalización en la congesti\'on y los tiempos de espera.
 \end{itemize}
 
 
+
+\item[2.] \textbf{Trade-off entre eficiencia y resiliencia:} 
+
+\begin{itemize}
+ \item   El sistema especializado prioriza la rapidez en atención individual, pero su alta tasa de inactividad lo hace vulnerable a fluctuaciones en la demanda. 
+
+\item   El sistema generalista, aunque presenta tiempos de espera mayores, garantiza mayor resiliencia al distribuir la carga entre servidores, reduciendo drásticamente la probabilidad de colapsos. 
+\end{itemize}
+
+
+
+\item[3.] \textbf{Recomendaciones estratégicas:}
+La elección óptima depende del contexto operativo:
+\begin{itemize}
+
+    
+    \item \textbf{Especializado} recomendable cuando:
+
+    Los servicios tienen alta priorización de tiempos de respuesta (ej.: atención médica urgente).
+
+    La congesti\'on tiene consecuencias operativas severas. 
+    
+\item \textbf{Generalista} preferible cuando:
+
+   Los sistemas tienen demanda variable o alta incertidumbre.
+   
+    Los costes de capacidad ociosa superan los de congestión marginal.    
+    
+    \item \textbf{Solución híbrida} propuesta: Mantener especialización base + servidores generalistas flotantes para absorber picos de demanda.
+    \end{itemize}
+    \end{itemize}
+
+
+
+Este análisis demuestra que no existe una solución universal óptima, sino configuraciones adaptativas donde la arquitectura de colas debe alinearse con los parámetros críticos del negocio y el perfil de riesgo organizacional.
+
 \begin{thebibliography}{9}
-    \bibitem{queue} SABATER, J. P. G. Aplicando Teoría de Colas en Dirección de Operaciones. [S.l.]:
-    Grupo ROGLE, Departamento de Organización de Empresas, Universidad Politécnica
-    de Valencia, 2015/2016.
+
+    \bibitem{pinker2000} Pinker, E. J., \& Shumsky, R. A. (2000). The efficiency-quality trade-off of cross-trained workers. Manufacturing \& Service Operations Management, 2(1), 32-48.
+
+    \bibitem{sabater2015} Sabater, J. P., \& ROGLE, G. (2015). Aplicando Teoría de Colas en dirección de operaciones.
+    
+   \bibitem{book} Gross, D., Shortle, J. F., Thompson, J. M., \& Harris, C. M. (2011). Fundamentals of queueing theory (Vol. 627). John wiley \& sons.
+
+%    
+%    \bibitem{hu2022} Hu, J., Andradóttir, S., \& Ayhan, H. (2022). Server coordination in queueing systems: When and how?. Probability in the Engineering and Informational Sciences, 36(3), 868-922.
  
 \end{thebibliography}
 
