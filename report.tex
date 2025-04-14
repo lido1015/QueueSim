@@ -10,8 +10,6 @@
 \usepackage{lmodern}
 \usepackage{fancyhdr}
 \usepackage{geometry}
-
-
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{multirow}
@@ -19,30 +17,32 @@
 \usepackage{listings}
 \usepackage{enumitem}
 
+% Paradoja de pooling
+
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 
-\lstdefinestyle{mystyle}{
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2,
-    frame=single
-}
+% \lstdefinestyle{mystyle}{
+%     commentstyle=\color{codegreen},
+%     keywordstyle=\color{magenta},
+%     numberstyle=\tiny\color{codegray},
+%     stringstyle=\color{codepurple},
+%     basicstyle=\ttfamily\footnotesize,
+%     breakatwhitespace=false,         
+%     breaklines=true,                 
+%     captionpos=b,                    
+%     keepspaces=true,                 
+%     numbers=left,                    
+%     numbersep=5pt,                  
+%     showspaces=false,                
+%     showstringspaces=false,
+%     showtabs=false,                  
+%     tabsize=2,
+%     frame=single
+% }
 
-\lstset{style=mystyle}
+%\lstset{style=mystyle}
 
 \setlength{\headheight}{24.01996pt}
 \addtolength{\topmargin}{-12.01996pt}
@@ -171,25 +171,25 @@ la probabilidad de que un cliente espere más de cinco minutos y el tiempo medio
 
 De la definición del problema se obtienen las siguientes variables de interés:
 \begin{itemize}
-    \item \textbf{avg\_clients:} Media del total de clientes en el sistema en cada instante (congestión del sistema)
-    \item \textbf{waiting\_time:} Media del tiempo durante el que un cliente permanece en la cola (tiempo de espera)
-    \item \textbf{p\_over\_tk:} Probabilidad de que que el tiempo de espera sea superior a un tiempo determinado (retrasos críticos)
-    \item \textbf{idle\_time:} Media del tiempo durante el cual los servidores no tienen clientes (subutilización de recursos)  
+    \item \textbf{L:} Media del total de clientes en el sistema en cada instante (congestión del sistema)
+    \item \(\mathbf{W_q}\)\textbf{:} Media del tiempo durante el que un cliente permanece en la cola (tiempo de espera)
+    \item \(\mathbf{P ( W_q > t_k)}\)\textbf{:} Probabilidad de que el tiempo de espera sea superior a un tiempo determinado (retrasos críticos)
+    \item \(\mathbf{t_{free}}\)\textbf{:} Media del tiempo durante el cual los servidores no tienen clientes (subutilización de recursos)  
 \end{itemize}
 
 
 \section{Variables que describen el problema}
 
 \begin{itemize}
-    \item \(\mathbf{\lambda_1}\)\textbf{:} frecuencia de llegada de clientes para pagos (distribución Poisson con media $\lambda_1$)
-    \item \(\mathbf{\lambda_2}\)\textbf{:} frecuencia de llegada de clientes para cobros (distribución Poisson con media $\lambda_2$)    
-    \item \(\mathbf{\mu_1}\)\textbf{:} tiempo de atención en el servidor 1 (distribución exponencial con media $\mu_1$)
-    \item \(\mathbf{\mu_2}\)\textbf{:} tiempo de atención en el servidor 2 (distribución exponencial con media $\mu_2$)
-    \item \textbf{strategy:} especializado vs generalista (variable categórica)
+    \item \(\mathbf{\lambda_1}\)\textbf{:} tasa de llegadas de clientes para pagos (distribución Poisson con media $\lambda_1$)
+    \item \(\mathbf{\lambda_2}\)\textbf{:} tasa de llegadas de clientes para cobros (distribución Poisson con media $\lambda_2$)    
+    \item \(\mathbf{t_1}\)\textbf{:} tiempo de atención en el servidor 1 (distribución exponencial con media $t_1$)
+    \item \(\mathbf{t_2}\)\textbf{:} tiempo de atención en el servidor 2 (distribución exponencial con media $t_2$)
+    \item \textbf{s:} estrategia especializada vs generalista (variable categórica)
     \item \(\mathbf{t_k}\)\textbf{:} tiempo de espera crítico 
 \end{itemize}
 
-En caso de estrategia especializada, el servidor 1 atiende los pagos y el servidor 2 los cobros. En caso de estrategia generalista, $\mu_1 = \mu_2$.
+En caso de estrategia especializada, el servidor 1 atiende los pagos y el servidor 2 los cobros. En caso de estrategia generalista, $t_1 = t_2$.
 
 
 
@@ -285,172 +285,164 @@ El flujo de ejecución sigue esta secuencia lógica:
         \item Mantener precisión temporal mediante integración continua
     \end{itemize}
     
-    % \item \textbf{Cálculo Final de Métricas:}
-    % \begin{lstlisting}[language=Python]
-    % avg_clients = area_total / tiempo_simulacion
-    % avg_wait = media(tiempos_espera) * 60  # Conversion a minutos
-    % p_crit = proporcion(tiempos_espera > tk)
-    % idle_time = 1 - (tiempo_ocupado_servidores)/(2*tiempo_simulacion)
-    % \end{lstlisting}
+
 \end{enumerate}
 
 \chapter{Resultados y experimentos}
 
-\section{Hallazgos de la simulación}
+\section{Variables de interés}
 
-Se ejecutaron 1000 simulaciones independientes para cada configuración del sistema. Para cada métrica de interés, se comparan las distribuciones resultantes de ambas estrategias mediante histogramas normalizados con su correspondiente distribución normal teórica.
+Se ejecutaron 1000 simulaciones independientes para cada configuración del sistema. Para cada métrica, se comparan las distribuciones resultantes de ambas estrategias mediante el histograma normalizado y la distribución normal correspondiente a la media y desviación estándar de los datos.
 
-\subsection{Clientes Promedio en el Sistema}
+\subsection{Análisis exploratorio}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/avr_clients.png}
-    \caption{Comparación de clientes promedio en el sistema. La distribución normal teórica (roja) muestra el ajuste a los datos simulados (azul).}
+    \includegraphics[width=0.95\textwidth]{images/L.png}
+    \caption{Histograma de la media de clientes en el sistema ($L$)}
     \label{fig:clientes}
 \end{figure}
 
-\subsection{Tiempo Medio de Espera}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/wait_time.png}
-    \caption{Distribución comparativa del tiempo de espera. Se observa mayor dispersión en la estrategia generalista debido al aumento del tiempo de servicio.}
+    \includegraphics[width=0.95\textwidth]{images/Wq.png}
+    \caption{Histograma del tiempo (min) medio de espera ($W_q$)}
     \label{fig:espera}
 \end{figure}
 
-\subsection{Probabilidad de Espera Crítica}
+\vspace{2cm}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/p_over_tk.png}
-    \caption{Probabilidad de superar el umbral de 5 minutos de espera. La estrategia especializada muestra menor varianza entre simulaciones.}
+    \includegraphics[width=0.95\textwidth]{images/PWqovertk.png}
+    \caption{Histograma de la probabilidad de superar el umbral de 5 minutos de espera}
     \label{fig:probabilidad}
 \end{figure}
 
-\subsection{Tiempo Inactivo de Servidores}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/ocio.png}
-    \caption{Comparación de la subutilización de recursos. La estrategia generalista mantiene menor tiempo inactivo promedio.}
+    \includegraphics[width=0.95\textwidth]{images/tfree.png}
+    \caption{Histograma de la tasa de tiempo inactivo de los servidores}
     \label{fig:inactividad}
 \end{figure}
 
+\subsection{Interpretación de los resultados}
 
+\begin{itemize}
+    \item Al seguir una estrategia generalista, aunque se distribuye la carga entre dos servidores, el tiempo de servicio por cliente aumenta debido
+    a la reducci\'on de la especialización. Por tango, aumenta la congestión del sistema y el tiempo de espera de los usuario.
+    \item La probabilidad de retrasos críticos no difiere significativamente, debido a que la distribución exponencial mitiga los efectos de las diferencias en las probabilidades de cola larga.
+    \item En el sistema especializado, los servidores no pueden redistribuir la carga. Si una cola está vacía, su servidor permanece inactivo aunque haya demanda en la otra cola, por tanto tiene un peor uso de recursos.
+\end{itemize}
+
+\subsection{Hipótesis extraídas}
+
+\subsubsection{Hipótesis 1: Mayor congestión de clientes en sistema generalista}
+\begin{itemize}
+    \item \textbf{Hipótesis nula:} $H_0: \mu_{\text{propuesto}} \leq \mu_{\text{actual}}$ 
+    \item \textbf{Hipótesis alternativa:} $H_1: \mu_{\text{propuesto}} > \mu_{\text{actual}}$ 
+\end{itemize}
+
+\subsubsection{Hipótesis 2: Mayor tiempo de espera en sistema generalista}
+\begin{itemize}
+    \item \textbf{Hipótesis nula:} $H_0: W_{\text{propuesto}} \leq W_{\text{actual}}$ 
+    \item \textbf{Hipótesis alternativa:} $H_1: W_{\text{propuesto}} > W_{\text{actual}}$ 
+\end{itemize}
+
+\subsubsection{Hipótesis 3: Similar probabilidad de retrasos críticos}
+\begin{itemize}
+    \item \textbf{Hipótesis nula:} $H_0: p_{\text{actual}} = p_{\text{propuesto}}$ 
+    \item \textbf{Hipótesis alternativa:} $H_1: p_{\text{actual}} \neq p_{\text{propuesto}}$ 
+\end{itemize}
+
+
+\subsubsection{Hipótesis 4: Mayor inactividad en sistema especializado}
+\begin{itemize}
+    \item \textbf{Hipótesis nula:} $H_0: I_{\text{actual}} \leq I_{\text{propuesto}}$ 
+    \item \textbf{Hipótesis alternativa:} $H_1: I_{\text{actual}} > I_{\text{propuesto}}$ 
+\end{itemize}
+
+\subsection{Pruebas de Hipótesis}
+
+Se realiz\'o un test t-student para cada hipótesis, en todos los casos se 
+obtuvieron p-values muy cercanos a 0, así que en todos los casos
+se rechaza la hipótesis nula. Se puede asegurar que hay diferencias significativas
+en la media de cada variable para las dos estrategias.
 
 \chapter{Modelo matemático}
 
-\section{Modelos Probabilísticos y Estado Estacionario}
 
-\subsection{Estado Estacionario en Teoría de Colas}
-El estado estacionario ocurre cuando el sistema se estabiliza con distribuciones de probabilidad constantes en el tiempo. Se define mediante:
+\section{Descripción del modelo}
 
+Consideramos dos sistemas de colas diferentes bajo teoría de colas markovianas, descritas detalladamente en \cite{queue}. Para ambos sistemas asumimos 
+procesos Poisson de llegada con tasa $\lambda$ y servicio con tasa $\mu$. Definimos:
 \begin{itemize}
-\item \textbf{Ecuaciones de Balance:} Tasa de entrada = Tasa de salida para cada estado
-\[
-\lambda P_n = \mu P_{n+1} \quad \text{(Para M/M/1)}
-\]
-\item \textbf{Distribución Estacionaria:} Probabilidades $P_n$ de tener $n$ clientes en el sistema
+    \item $\rho = \frac{\lambda}{c\mu}$ (intensidad de tráfico, $c$ cantidad de servidores en paralelo)
+    \item $L$: Número promedio de clientes en el sistema
+    \item $L_q$: Número promedio en cola
+    \item $W_q$: Tiempo promedio en cola
 \end{itemize}
 
-\subsection{Sistema Especializado (M/M/1 × 2)}
-Para cada caja individual:
+\subsection{Sistema Actual (Dos Colas M/M/1)}
 
-\subsubsection{Balance de Estados}
-\begin{align*}
-\text{Estado 0:} & \quad \lambda P_0 = \mu P_1 \\
-\text{Estado n:} & \quad (\lambda + \mu)P_n = \lambda P_{n-1} + \mu P_{n+1}
-\end{align*}
-
-\subsubsection{Solución General}
-\[
-P_n = (1 - \rho)\rho^n \quad \text{donde } \rho = \frac{\lambda}{\mu} < 1
-\]
-
-\subsubsection{Métricas Derivadas}
-\begin{align*}
-L &= \sum_{n=0}^\infty nP_n = \frac{\rho}{1 - \rho} \\
-W &= \frac{L}{\lambda} = \frac{1}{\mu - \lambda} \\
-P(W_q > t) &= \rho e^{-\mu(1-\rho)t} \\
-\text{Tiempo ocioso} &= 1 - \rho
-\end{align*}
-
-\subsection{Sistema Generalista (M/M/2)}
-Para dos servidores compartidos:
-
-\subsubsection{Balance de Estados}
-\[
-\begin{cases}
-\lambda P_0 = \mu P_1 \\
-(\lambda + \mu)P_1 = \lambda P_0 + 2\mu P_2 \\
-(\lambda + 2\mu)P_n = \lambda P_{n-1} + 2\mu P_{n+1} \quad n \geq 2
-\end{cases}
-\]
-
-\subsubsection{Solución General}
-\[
-P_n = \begin{cases}
-P_0 \left(\frac{\lambda}{\mu}\right)^n \frac{1}{n!} & 0 \leq n \leq 2 \\
-P_0 \left(\frac{\lambda}{\mu}\right)^n \frac{1}{2^{n-2}2!} & n > 2
-\end{cases}
-\]
-
-\subsubsection{Probabilidad de Estado Vacío}
-\[
-P_0 = \left[1 + \frac{\lambda}{\mu} + \frac{(\lambda/\mu)^2}{2(1 - \rho)}\right]^{-1} \quad \rho = \frac{\lambda}{2\mu}
-\]
-
-\subsubsection{Métricas Clave}
-\begin{align*}
-L &= \frac{\lambda\mu(\lambda/\mu)^2}{(2\mu - \lambda)^2}P_0 + \frac{\lambda}{\mu} \\
-W &= \frac{L}{\lambda} \\
-P(W_q > t) &= \frac{(2\rho)^2}{2(1 - \rho)}P_0 e^{-(2\mu - \lambda)t} \\
-\text{Tiempo ocioso} &= 1 - \rho
-\end{align*}
-
-\section{Supuestos y Restricciones}
+Para cada servidor simple independiente:
 \begin{itemize}
-\item \textbf{Proceso de Poisson:} Llegadas independientes con tasa constante
-\item \textbf{Disciplina FIFO:} Primero en llegar, primero en ser atendido
-\item \textbf{Estado Estacionario:} $\rho < 1$ para convergencia
-\item \textbf{Servidores Homogéneos:} Misma capacidad de servicio
-\item \textbf{Independencia:} Tiempos entre llegadas y servicios independientes
+    \item $L = \frac{\lambda}{\mu - \lambda}$
+    \item $W_q = \frac{\rho}{\mu - \lambda}$
+    \item $P(W_q > t) = \rho e^{-(\mu - \lambda)t}$
+    \item $P_{free} = 1 - \rho$
 \end{itemize}
 
-\section{Resultados Teóricos vs Simulación}
-\subsection{Sistema Especializado}
+\subsection{Sistema Propuesto (Una Cola M/M/2)}
+Para el sistema conjunto de los dos servidores en paralelo:
+\begin{itemize}
+    \item 
+    $P_0 = \left[\sum_{k=0}^{1}\frac{(2\rho)^k}{k!} + \frac{(2\rho)^2}{2!(1-\rho)}\right]^{-1}$
+    
+    \item $L_q = \frac{(2\rho)^2\rho}{2!(1-\rho)^2}P_0$
+    
+    \item $L = \frac{\lambda}{\mu} + L_q$
+    
+    \item $W_q = \frac{L_q}{\lambda}$
+    
+    \item $P(W_q > t) = \frac{2\rho e^{-2\mu(1-\rho)t}}{2 - \rho}P_0$
+    
+    \item $P_{\text{free}} = 1 - \rho$ \\
+\end{itemize}
+
+
+\section{Supuestos y restricciones}
+\begin{itemize}
+    \item \textbf{Política FIFO:} Clientes son atendidos en orden de llegada
+    \item \textbf{Independencia:} Llegadas y servicios son procesos independientes
+    \item \textbf{Uniformidad:} Llegadas y servicios tienen la misma tasa para ambos sistemas y ambos servicios (valores de entrada del problema específico)
+    \item \textbf{Espacio infinito:} Capacidad ilimitada en las colas
+    \item \textbf{Homogeneidad:} Tasa de servicio constante en el tiempo
+\end{itemize}
+
+
+
+\section{Comparación de resultados}
 \begin{table}[h]
 \centering
-\begin{tabular}{lccc}
+\caption{Resultados Teóricos vs. Experimentales}
+\begin{tabular}{lccccc}
 \toprule
-Métrica & Teórico & Simulado  \\
+\textbf{Métrica} & \multicolumn{2}{c}{\textbf{Sistema actual ($\lambda = 20$, $\mu = 30$)}} & \multicolumn{2}{c}{\textbf{Sistema propuesto ($\lambda = 40$, $\mu = 25$)}} \\
+ & Teórico & Experimental & Teórico & Experimental \\
 \midrule
-Clientes totales & 2.67 & 4.00  \\
-Tiempo sistema (min) & 4.00 & 3.99  \\
-$P(W_q >5$ min$)$ & 28.65\% & 29\%  \\
-Tiempo ocioso & 33.33\% & 33\%  \\
+Clientes en el sistema & 4.00 & 3.99 & 4.44 & 4.44 \\
+Tiempo en cola (min) & 4.00 & 3.99 & 4.27 & 4.26 \\
+Prob. de retraso crítico & 0.2895 & 0.29 & 0.3089 & 0.31 \\
+Tiempo inactivo (\%) & 33 & 33 & 20 & 20 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Sistema Generalista}
-\begin{table}[h]
-\centering
-\begin{tabular}{lccc}
-\toprule
-Métrica & Teórico & Simulado  \\
-\midrule
-Clientes totales & 3.56 & 4.43  \\
-Tiempo sistema (min) & 5.34 & 4.25  \\
-$P(W_q >5$ min$)$ & 35.12\% & 31\%  \\
-Tiempo ocioso & 20.00\% & 20\%  \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Análisis de Discrepancias}
-\begin{itemize}
-\item \textbf{Efectos Transitorios:} La simulación necesita tiempo para alcanzar el estado estacionario
-\item \textbf{Muestreo Finito:} Limitaciones en números pseudoaleatorios
-\item \textbf{Redondeos:} Precisión numérica en implementación
-\item \textbf{No idealidades:} En práctica, las llegadas pueden tener cierta correlación
-\end{itemize}
+Los resultados experimentales coinciden con las predicciones teóricas, confirmando la validez de los supuestos markovianos. 
+Se concluye que ambos enfoques proveen una base sólida para la toma de decisiones operativas.
 
 \chapter{Conclusiones}
 
